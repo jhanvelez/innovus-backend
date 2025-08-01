@@ -6,7 +6,7 @@ import {
   PureAbility,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { Role } from '../../roles/entities/role.entity';
 import { Permission } from '../../permissions/entities/permission.entity';
 

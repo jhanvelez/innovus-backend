@@ -3,13 +3,22 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './user/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
-import { CallsModule } from './calls/calls.module';
 import { CaslModule } from './auth/casl/casl.module';
 import { LocationsModule } from './locations/locations.module';
 import { PredioModule } from './predio/predio.module';
+import { SuscriptorModule } from './suscriptor/suscriptor.module';
+import { ReadingModule } from './reading/reading.module';
+import { MeterModule } from './meter/meter.module';
+import { BillingModule } from './billing/billing.module';
+import { SubscriberModule } from './subscriber/subscriber.module';
+import { BillingConceptModule } from './billing-concept/billing-concept.module';
+import { InvoiceModule } from './invoice/invoice.module';
+import { ServiceOrderModule } from './service-order/service-order.module';
+import { PaymentModule } from './payment/payment.module';
+import { NotificationModule } from './notification/notification.module';
 
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
@@ -36,10 +45,19 @@ import * as crypto from 'crypto';
     AuthModule,
     UsersModule,
     RolesModule,
-    CallsModule,
     CaslModule,
     LocationsModule,
     PredioModule,
+    SuscriptorModule,
+    ReadingModule,
+    MeterModule,
+    BillingModule,
+    SubscriberModule,
+    BillingConceptModule,
+    InvoiceModule,
+    ServiceOrderModule,
+    PaymentModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
