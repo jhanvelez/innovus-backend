@@ -69,6 +69,10 @@ $ npm install -g mau
 $ mau deploy
 ```
 
+## Run migrations (seeders)
+
+Debes agregar el prefijo que has creado para la creacion del seeder.
+
 ```bash
 $ npx ts-node -r tsconfig-paths/register src/database/seeder.ts departments municipalities users
 ```
