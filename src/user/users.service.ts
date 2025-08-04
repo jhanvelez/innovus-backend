@@ -5,10 +5,10 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { UserFilterDto } from './dto/user-filter.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -18,18 +18,35 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async findAll(filter?: UserFilterDto): Promise<User[]> {
-    if (filter?.search) {
-      return this.usersRepository.find({
-        where: [
-          { email: Like(`%${filter.search}%`) },
-          { firstName: Like(`%${filter.search}%`) },
-          { lastName: Like(`%${filter.search}%`) },
-          { documentId: Like(`%${filter.search}%`) },
-        ],
+  async findAll(query: PaginationQueryDto): Promise<{
+    data: User[];
+    total: number;
+    currentPage: number;
+    totalPages: number;
+  }> {
+    const { page = 1, limit = 10, search } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.usersRepository.createQueryBuilder('user');
+
+    if (search) {
+      qb.where('user.name ILIKE :search OR user.email ILIKE :search', {
+        search: `%${search}%`,
       });
     }
-    return this.usersRepository.find();
+
+    const [data, total] = await qb
+      .skip(skip)
+      .take(limit)
+      .orderBy('user.createdAt', 'DESC')
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async create(userData: Partial<User>): Promise<User> {

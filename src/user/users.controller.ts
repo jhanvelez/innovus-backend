@@ -4,16 +4,16 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth.guard';
 import { Request } from 'express';
 import { Query } from '@nestjs/common';
-import { UserFilterDto } from './dto/user-filter.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('')
-  async findAll(@Query() filter: UserFilterDto) {
-    const users = await this.usersService.findAll(filter);
-    return { data: users };
+  async findAll(@Query() paginationQuery: PaginationQueryDto) {
+    const users = await this.usersService.findAll(paginationQuery);
+    return users;
   }
 
   @Post('register')

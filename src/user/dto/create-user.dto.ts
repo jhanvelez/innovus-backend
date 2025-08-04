@@ -15,4 +15,9 @@ export class CreateUserDto {
 
   @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
   password: string;
+
+  @MinLength(10, {
+    message: 'El númnero de telefono no debe ser menor de 10 digitos',
+  })
+  phoneNumber: string;
 }
