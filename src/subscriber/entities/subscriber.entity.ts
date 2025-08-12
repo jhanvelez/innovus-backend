@@ -4,48 +4,47 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Predio } from 'src/predio/entities/predio.entity';
+import { User } from 'src/user/entities/user.entity';
 
 @Entity()
 export class Subscriber {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 20 })
-  identificacion: string;
-
-  @Column({ type: 'date' })
-  fechaSuscripcion: Date;
+  identification: string;
 
   @Column({ length: 50 })
-  categoria: string;
+  category: string;
 
   @Column({ length: 100 })
-  nombrePropietario: string;
-
-  @Column({ length: 100 })
-  usuario: string;
+  nameOwner: string;
 
   @Column({ length: 255 })
-  direccion: string;
+  address: string;
 
   @Column({ length: 20 })
-  tel: string;
+  phone: string;
 
   @Column({ length: 100 })
-  correoElectronico: string;
-
-  @Column({ length: 100 })
-  medidor: string;
+  email: string;
 
   @Column({ length: 50 })
-  ciclo: string;
+  cycle: string;
 
   @Column({ length: 50 })
-  ruta: string;
+  route: string;
 
-  @ManyToOne(() => Predio)
-  @JoinColumn({ name: 'predioId' })
-  predio: Predio;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'userId' })
+  user: User;
 }

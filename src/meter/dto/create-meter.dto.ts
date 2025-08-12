@@ -1,4 +1,10 @@
-import { IsString, IsNumber, IsDateString, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsDateString,
+  IsNotEmpty,
+  IsUUID,
+} from 'class-validator';
 
 export class CreateMeterDto {
   @IsString()
@@ -31,4 +37,8 @@ export class CreateMeterDto {
 
   @IsNumber()
   value: number;
+
+  @IsNotEmpty()
+  @IsUUID()
+  propertyId: string;
 }

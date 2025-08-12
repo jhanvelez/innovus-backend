@@ -11,7 +11,7 @@ export class CreateBillingDto {
   totalValue: number;
 
   @IsNumber()
-  subscriberId: number;
+  subscriberId: string;
 
   @IsNumber()
   meterId: number;

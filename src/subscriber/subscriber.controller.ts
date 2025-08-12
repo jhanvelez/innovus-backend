@@ -1,30 +1,51 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Req,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { SubscriberService } from './subscriber.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
+import { Query } from '@nestjs/common';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('subscriber')
 export class SubscriberController {
   constructor(private readonly subscriberService: SubscriberService) {}
 
+  @UseGuards(AuthGuard('jwt'))
   @Post()
-  create(@Body() createSubscriberDto: CreateSubscriberDto) {
-    return this.subscriberService.create(createSubscriberDto);
+  create(@Body() createSubscriberDto: CreateSubscriberDto, @Req() req) {
+    const userId = req.user.userId;
+    return this.subscriberService.create(createSubscriberDto, userId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
-  findAll() {
-    return this.subscriberService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.subscriberService.findAll(paginationQuery);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.subscriberService.findOne(+id);
+    return this.subscriberService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubscriberDto: UpdateSubscriberDto) {
-    return this.subscriberService.update(+id, updateSubscriberDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateSubscriberDto: UpdateSubscriberDto,
+  ) {
+    return this.subscriberService.update(id, updateSubscriberDto);
   }
 
   @Delete(':id')

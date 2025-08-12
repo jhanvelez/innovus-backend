@@ -8,8 +8,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
 import { CaslModule } from './auth/casl/casl.module';
 import { LocationsModule } from './locations/locations.module';
-import { PredioModule } from './predio/predio.module';
-import { SuscriptorModule } from './suscriptor/suscriptor.module';
 import { ReadingModule } from './reading/reading.module';
 import { MeterModule } from './meter/meter.module';
 import { BillingModule } from './billing/billing.module';
@@ -19,6 +17,7 @@ import { InvoiceModule } from './invoice/invoice.module';
 import { ServiceOrderModule } from './service-order/service-order.module';
 import { PaymentModule } from './payment/payment.module';
 import { NotificationModule } from './notification/notification.module';
+import { PropertyModule } from './property/property.module';
 
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
@@ -47,8 +46,6 @@ import * as crypto from 'crypto';
     RolesModule,
     CaslModule,
     LocationsModule,
-    PredioModule,
-    SuscriptorModule,
     ReadingModule,
     MeterModule,
     BillingModule,
@@ -58,6 +55,7 @@ import * as crypto from 'crypto';
     ServiceOrderModule,
     PaymentModule,
     NotificationModule,
+    PropertyModule,
   ],
   controllers: [AppController],
   providers: [AppService],

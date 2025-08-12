@@ -1,50 +1,49 @@
-import { IsString, IsNotEmpty, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEmail,
+  Length,
+} from 'class-validator';
 
 export class CreateSubscriberDto {
   @IsString()
   @IsNotEmpty()
-  identificacion: string;
-
-  @IsDateString()
-  @IsNotEmpty()
-  fechaSuscripcion: string;
+  @Length(1, 20)
+  identification: string;
 
   @IsString()
   @IsNotEmpty()
-  categoria: string;
+  @Length(1, 50)
+  category: string;
 
   @IsString()
   @IsNotEmpty()
-  nombrePropietario: string;
+  @Length(1, 100)
+  nameOwner: string;
 
   @IsString()
   @IsNotEmpty()
-  usuario: string;
+  @Length(1, 255)
+  address: string;
+
+  @IsString()
+  @IsOptional()
+  @Length(0, 20)
+  phone?: string;
+
+  @IsEmail()
+  @IsOptional()
+  @Length(0, 100)
+  email?: string;
 
   @IsString()
   @IsNotEmpty()
-  direccion: string;
+  @Length(1, 50)
+  cycle: string;
 
   @IsString()
   @IsNotEmpty()
-  tel: string;
-
-  @IsString()
-  @IsNotEmpty()
-  correoElectronico: string;
-
-  @IsString()
-  @IsNotEmpty()
-  medidor: string;
-
-  @IsString()
-  @IsNotEmpty()
-  ciclo: string;
-
-  @IsString()
-  @IsNotEmpty()
-  ruta: string;
-
-  @IsNotEmpty()
-  predioId: number;
+  @Length(1, 50)
+  route: string;
 }

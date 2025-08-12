@@ -5,7 +5,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Suscriptor } from 'src/suscriptor/entities/suscriptor.entity';
+import { Subscriber } from 'src/subscriber/entities/subscriber.entity';
 
 @Entity()
 export class Reading {
@@ -36,7 +36,7 @@ export class Reading {
   @Column()
   medidorId: number;
 
-  @ManyToOne(() => Suscriptor)
-  @JoinColumn({ name: 'suscriptorId' })
-  suscriptor: Suscriptor;
+  @ManyToOne(() => Subscriber)
+  @JoinColumn({ name: 'subscriberId' })
+  subscriber: Subscriber;
 }
