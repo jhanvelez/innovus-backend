@@ -14,7 +14,7 @@ import { Municipality } from '../locations/entities/municipality.entity';
 
 export const createDataSource = (configService: ConfigService) => {
   return new DataSource({
-    type: 'postgres',
+    type: 'mysql',
     host: configService.get<string>('DATABASE_HOST'),
     port: configService.get<number>('DATABASE_PORT'),
     username: configService.get<string>('DATABASE_USER'),

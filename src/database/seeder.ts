@@ -19,8 +19,8 @@ const args = process.argv.slice(2);
   console.log('[Seeder] Conectado a la base de datos');
 
   // await dataSource.query('TRUNCATE TABLE users CASCADE');
-  await dataSource.query('TRUNCATE TABLE municipalities CASCADE');
-  await dataSource.query('TRUNCATE TABLE departments CASCADE');
+  // await dataSource.query('TRUNCATE TABLE municipalities CASCADE');
+  // await dataSource.query('TRUNCATE TABLE departments CASCADE');
 
   if (args.includes('users')) await seedUsers(dataSource);
   if (args.includes('departments')) await seedDepartments(dataSource);
