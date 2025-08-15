@@ -66,6 +66,7 @@ export class PropertyService {
       message: 'Registro exitoso',
     };
   }
+
   async findOne(id: string): Promise<Property> {
     const subscriber = await this.propetyRepository.findOne({
       where: { id },
@@ -94,5 +95,34 @@ export class PropertyService {
 
   remove(id: number) {
     return `This action removes a #${id} property`;
+  }
+
+  async getAllWithMeters(): Promise<{
+    data: Property[];
+    status: boolean;
+    message: string;
+  }> {
+    const data = await this.propetyRepository
+      .createQueryBuilder('property')
+      .leftJoinAndSelect('property.meters', 'meter')
+      .select([
+        'property.id',
+        'property.cadastralRecord',
+        'property.address',
+        'meter.id',
+        'meter.serialNumber',
+        'meter.brand',
+        'meter.model',
+        'meter.installationDate',
+        'meter.purchaseDate',
+      ])
+      .orderBy('property.createdAt', 'DESC')
+      .getMany();
+
+    return {
+      data,
+      status: true,
+      message: 'Properties with meters retrieved successfully',
+    };
   }
 }

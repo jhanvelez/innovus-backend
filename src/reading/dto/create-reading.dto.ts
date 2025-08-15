@@ -1,30 +1,19 @@
-import { IsDateString, IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateReadingDto {
-  @IsDateString()
-  fechaLectura: string;
+  @IsString()
+  cycle: string;
 
   @IsString()
-  ciclo: string;
+  route: string;
 
   @IsString()
-  ruta: string;
+  photo: string;
 
   @IsNumber()
-  lecturaAnterior: number;
+  reading: number;
 
-  @IsNumber()
-  lecturaActual: number;
-
-  @IsNumber()
-  consumoPeriodo: number;
-
-  @IsString()
-  lector: string;
-
-  @IsNumber()
-  medidorId: number;
-
-  @IsNumber()
-  suscriptorId: number;
+  @IsNotEmpty()
+  @IsUUID()
+  meterId: string;
 }

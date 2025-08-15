@@ -4,10 +4,12 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Subscriber } from 'src/subscriber/entities/subscriber.entity';
+import { Meter } from 'src/meter/entities/meter.entity';
 
 @Entity()
 export class Property {
@@ -23,6 +25,9 @@ export class Property {
   @ManyToOne(() => Subscriber)
   @JoinColumn({ name: 'subscriberId' })
   subscriber: Subscriber;
+
+  @OneToMany(() => Meter, (meter) => meter.property)
+  meters: Meter[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

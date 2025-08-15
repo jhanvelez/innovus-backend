@@ -3,7 +3,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
-  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -44,9 +43,8 @@ export class Meter {
   @Column('float')
   value: number;
 
-  @ManyToOne(() => Property)
-  @JoinColumn({ name: 'propertyId' })
-  propety: Property;
+  @ManyToOne(() => Property, (property) => property.meters)
+  property: Property;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

@@ -4,39 +4,35 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Subscriber } from 'src/subscriber/entities/subscriber.entity';
+import { Meter } from 'src/meter/entities/meter.entity';
 
 @Entity()
 export class Reading {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'date' })
-  fechaLectura: Date;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ length: 50 })
-  ciclo: string;
+  cycle: string;
 
   @Column({ length: 50 })
-  ruta: string;
+  route: string;
+
+  @Column({ length: 50 })
+  photo: string;
 
   @Column('float')
-  lecturaAnterior: number;
+  reading: number;
 
-  @Column('float')
-  lecturaActual: number;
+  @ManyToOne(() => Meter)
+  @JoinColumn({ name: 'meterId' })
+  meter: Meter;
 
-  @Column('float')
-  consumoPeriodo: number;
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
 
-  @Column({ length: 100 })
-  lector: string;
-
-  @Column()
-  medidorId: number;
-
-  @ManyToOne(() => Subscriber)
-  @JoinColumn({ name: 'subscriberId' })
-  subscriber: Subscriber;
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
 }

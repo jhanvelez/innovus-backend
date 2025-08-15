@@ -1,7 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ReadingService } from './reading.service';
 import { CreateReadingDto } from './dto/create-reading.dto';
 import { UpdateReadingDto } from './dto/update-reading.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Controller('reading')
 export class ReadingController {
@@ -13,8 +23,8 @@ export class ReadingController {
   }
 
   @Get()
-  findAll() {
-    return this.readingService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.readingService.findAll(paginationQuery);
   }
 
   @Get(':id')
@@ -24,7 +34,7 @@ export class ReadingController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReadingDto: UpdateReadingDto) {
-    return this.readingService.update(+id, updateReadingDto);
+    return this.readingService.update(id, updateReadingDto);
   }
 
   @Delete(':id')

@@ -21,7 +21,7 @@ export class MeterService {
   }> {
     const entity = this.meterRepository.create({
       ...dto,
-      propety: { id: dto.propertyId } as Property,
+      property: { id: dto.propertyId } as Property,
     });
     const saved = await this.meterRepository.save(entity);
 

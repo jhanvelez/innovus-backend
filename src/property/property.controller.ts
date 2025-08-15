@@ -6,12 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
-import { Query } from '@nestjs/common';
 
 @Controller('property')
 export class PropertyController {
@@ -25,6 +25,11 @@ export class PropertyController {
   @Get()
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.propertyService.findAll(paginationQuery);
+  }
+
+  @Get('/with-meters')
+  async getAllWithMeters() {
+    return this.propertyService.getAllWithMeters();
   }
 
   @Get(':id')
