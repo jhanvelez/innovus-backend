@@ -1,19 +1,32 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 
 import { CreateReadingDto } from './dto/create-reading.dto';
-import { UpdateReadingDto } from './dto/update-reading.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 import { Reading } from './entities/reading.entity';
 import { Meter } from 'src/meter/entities/meter.entity';
+import { ReadingEvidence } from './entities/readingevidence.entity';
+import { ReadingCausal } from './entities/readingcausal.entity';
+import { ReadingSession } from 'src/reading-session/entities/reading-session.entity';
+
+export enum ReadingType {
+  EVIDENCE = 'EVIDENCE',
+  CAUSAL = 'CAUSAL',
+}
 
 @Injectable()
 export class ReadingService {
   constructor(
+    @InjectRepository(ReadingSession)
+    private readonly readingSessionRepository: Repository<ReadingSession>,
     @InjectRepository(Reading)
     private readonly readigRepository: Repository<Reading>,
+    @InjectRepository(ReadingEvidence)
+    private readonly readingEvidenceRepository: Repository<ReadingEvidence>,
+    @InjectRepository(ReadingCausal)
+    private readonly readingCausalRepository: Repository<ReadingCausal>,
   ) {}
 
   async findAll(query: PaginationQueryDto): Promise<{
@@ -55,14 +68,53 @@ export class ReadingService {
     status: boolean;
     message: string;
   }> {
-    const entity = this.readigRepository.create({
-      ...dto,
-      meter: { id: dto.meterId } as Meter,
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+
+    const activeSession = await this.readingSessionRepository.findOne({
+      where: {
+        year,
+        month,
+        isActive: true,
+      },
     });
-    const saved = await this.readigRepository.save(entity);
+
+    if (!activeSession) {
+      throw new BadRequestException(
+        'No existe una sesión activa para el mes actual. Debes iniciar una sesión de lectura antes de registrar lecturas.',
+      );
+    }
+
+    const reading = this.readigRepository.create({
+      ...dto,
+      type: dto.type as ReadingType,
+      meter: { id: dto.meterId } as Meter,
+      // se toma la sesión activa actual
+      session: activeSession,
+    });
+
+    // Guardamos primero la lectura base
+    const savedReading = await this.readigRepository.save(reading);
+
+    if (dto.evidence) {
+      const evidence = this.readingEvidenceRepository.create({
+        ...dto.evidence,
+        reading: savedReading,
+      });
+      await this.readingEvidenceRepository.save(evidence);
+      savedReading.evidence = evidence;
+    } else if (dto.causalId) {
+      const causal = this.readingCausalRepository.create({
+        causalId: dto.causalId,
+        reading: savedReading,
+      });
+      await this.readingCausalRepository.save(causal);
+      savedReading.causal = causal;
+    }
 
     return {
-      data: saved,
+      data: savedReading,
       status: true,
       message: 'Registro exitoso',
     };
@@ -70,22 +122,6 @@ export class ReadingService {
 
   findOne(id: number) {
     return `This action returns a #${id} reading`;
-  }
-
-  async update(
-    id: string,
-    updatePropertyDto: UpdateReadingDto,
-  ): Promise<Reading> {
-    const subscriber = await this.readigRepository.preload({
-      id,
-      ...updatePropertyDto,
-    });
-
-    if (!subscriber) {
-      throw new NotFoundException(`Subscriber with ID ${id} not found`);
-    }
-
-    return await this.readigRepository.save(subscriber);
   }
 
   remove(id: number) {

@@ -14,8 +14,8 @@ export class Subscriber {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 20 })
-  identification: string;
+  @Column({ type: 'int' })
+  identification: number;
 
   @Column({ length: 50 })
   category: string;
@@ -23,20 +23,11 @@ export class Subscriber {
   @Column({ length: 100 })
   nameOwner: string;
 
-  @Column({ length: 255 })
-  address: string;
-
   @Column({ length: 20 })
   phone: string;
 
   @Column({ length: 100 })
   email: string;
-
-  @Column({ length: 50 })
-  cycle: string;
-
-  @Column({ length: 50 })
-  route: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

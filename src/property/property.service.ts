@@ -7,6 +7,7 @@ import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 import { Property } from './entities/property.entity';
 import { Subscriber } from '../subscriber/entities/subscriber.entity';
+import { Tenant } from '../tenant/entities/tenant.entity';
 
 @Injectable()
 export class PropertyService {
@@ -24,7 +25,20 @@ export class PropertyService {
     const { page = 1, limit = 10, search } = query;
     const skip = (page - 1) * limit;
 
-    const qb = this.propetyRepository.createQueryBuilder('property');
+    const qb = this.propetyRepository
+      .createQueryBuilder('property')
+      .leftJoin('property.subscriber', 'subscriber')
+      .leftJoin('property.tenant', 'tenant')
+      .select([
+        'property.id',
+        'property.cadastralRecord',
+        'property.address',
+        'property.cycle',
+        'property.route',
+        'property.createdAt',
+        'subscriber.nameOwner',
+        'tenant.fullName',
+      ]);
 
     if (search) {
       qb.where(
@@ -57,6 +71,7 @@ export class PropertyService {
     const entity = this.propetyRepository.create({
       ...dto,
       subscriber: { id: dto.subscriberId } as Subscriber,
+      tenant: { id: dto.tenantId } as Tenant,
     });
     const saved = await this.propetyRepository.save(entity);
 

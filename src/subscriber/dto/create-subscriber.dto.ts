@@ -4,28 +4,21 @@ import {
   IsOptional,
   IsEmail,
   Length,
+  IsInt,
+  Min,
+  Max,
 } from 'class-validator';
 
 export class CreateSubscriberDto {
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 20)
-  identification: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 50)
-  category: string;
+  @IsInt({ message: 'El valor debe ser un número entero' })
+  @Min(1, { message: 'El valor mínimo permitido es 1' })
+  @Max(999999999, { message: 'El valor máximo permitido es 10' })
+  identification: number;
 
   @IsString()
   @IsNotEmpty()
   @Length(1, 100)
   nameOwner: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 255)
-  address: string;
 
   @IsString()
   @IsOptional()
@@ -40,10 +33,5 @@ export class CreateSubscriberDto {
   @IsString()
   @IsNotEmpty()
   @Length(1, 50)
-  cycle: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @Length(1, 50)
-  route: string;
+  category: string;
 }

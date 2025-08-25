@@ -3,14 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
 } from '@nestjs/common';
 import { ReadingService } from './reading.service';
 import { CreateReadingDto } from './dto/create-reading.dto';
-import { UpdateReadingDto } from './dto/update-reading.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Controller('reading')
@@ -32,10 +30,12 @@ export class ReadingController {
     return this.readingService.findOne(+id);
   }
 
+  /*
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateReadingDto: UpdateReadingDto) {
     return this.readingService.update(id, updateReadingDto);
   }
+  */
 
   @Delete(':id')
   remove(@Param('id') id: string) {

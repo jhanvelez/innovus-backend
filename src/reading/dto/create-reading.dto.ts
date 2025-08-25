@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty, IsUUID, ValidateIf } from 'class-validator';
 
 export class CreateReadingDto {
   @IsString()
@@ -7,13 +7,29 @@ export class CreateReadingDto {
   @IsString()
   route: string;
 
-  @IsString()
-  photo: string;
-
-  @IsNumber()
-  reading: number;
-
   @IsNotEmpty()
   @IsUUID()
   meterId: string;
+
+  // Tipo de lectura que condicionará los valores requeridos
+  @IsString()
+  @IsNotEmpty()
+  type: string;
+
+  // Evidencia (solo requerida si type === 'evidence')
+  @ValidateIf((o) => o.type === 'evidence')
+  @IsNotEmpty()
+  evidence: {
+    IsString();
+    photo: string;
+
+    IsNumber();
+    value: number;
+  };
+
+  // Causal (solo requerida si type === 'causal')
+  @ValidateIf((o) => o.type === 'causal')
+  @IsUUID()
+  @IsNotEmpty()
+  causalId: string;
 }

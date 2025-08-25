@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Body,
+  Query,
   Patch,
   Param,
   Delete,
@@ -12,7 +13,6 @@ import {
 import { SubscriberService } from './subscriber.service';
 import { CreateSubscriberDto } from './dto/create-subscriber.dto';
 import { UpdateSubscriberDto } from './dto/update-subscriber.dto';
-import { Query } from '@nestjs/common';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { AuthGuard } from '@nestjs/passport';
 

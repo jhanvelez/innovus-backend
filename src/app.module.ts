@@ -18,6 +18,8 @@ import { ServiceOrderModule } from './service-order/service-order.module';
 import { PaymentModule } from './payment/payment.module';
 import { NotificationModule } from './notification/notification.module';
 import { PropertyModule } from './property/property.module';
+import { TenantModule } from './tenant/tenant.module';
+import { ReadingSessionModule } from './reading-session/reading-session.module';
 
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
@@ -58,6 +60,8 @@ import * as crypto from 'crypto';
     PaymentModule,
     NotificationModule,
     PropertyModule,
+    TenantModule,
+    ReadingSessionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
