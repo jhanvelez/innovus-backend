@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -21,11 +23,15 @@ import { PropertyModule } from './property/property.module';
 import { TenantModule } from './tenant/tenant.module';
 import { ReadingSessionModule } from './reading-session/reading-session.module';
 
+import { join } from 'path';
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'), // 👈 carpeta que quieres exponer
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

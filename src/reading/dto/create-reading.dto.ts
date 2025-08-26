@@ -17,7 +17,7 @@ export class CreateReadingDto {
   type: string;
 
   // Evidencia (solo requerida si type === 'evidence')
-  @ValidateIf((o) => o.type === 'evidence')
+  @ValidateIf((o) => o.type === 'EVIDENCE')
   @IsNotEmpty()
   evidence: {
     IsString();
@@ -28,7 +28,7 @@ export class CreateReadingDto {
   };
 
   // Causal (solo requerida si type === 'causal')
-  @ValidateIf((o) => o.type === 'causal')
+  @ValidateIf((o) => o.type === 'CAUSAL')
   @IsUUID()
   @IsNotEmpty()
   causalId: string;

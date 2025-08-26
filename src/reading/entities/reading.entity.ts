@@ -36,13 +36,21 @@ export class Reading {
   type: 'EVIDENCE' | 'CAUSAL';
 
   // Relación 1 a 1 con la entidad de captura (opcional)
-  @OneToOne(() => ReadingEvidence, { nullable: true })
-  @JoinColumn()
+  @OneToOne(() => ReadingEvidence, (evidence) => evidence.reading, {
+    cascade: true,
+    nullable: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'evidenceId' })
   evidence?: ReadingEvidence;
 
   // Relación 1 a 1 con la entidad de causal (opcional)
-  @OneToOne(() => ReadingCausal, { nullable: true })
-  @JoinColumn()
+  @OneToOne(() => ReadingCausal, (causal) => causal.reading, {
+    cascade: true,
+    nullable: true,
+    eager: true,
+  })
+  @JoinColumn({ name: 'causalId' })
   causal?: ReadingCausal;
 
   @CreateDateColumn({ type: 'timestamp' })

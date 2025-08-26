@@ -29,6 +29,7 @@ export class ReadingService {
     private readonly readingCausalRepository: Repository<ReadingCausal>,
   ) {}
 
+  /*
   async findAll(query: PaginationQueryDto): Promise<{
     data: Reading[];
     total: number;
@@ -38,21 +39,77 @@ export class ReadingService {
     const { page = 1, limit = 10, search } = query;
     const skip = (page - 1) * limit;
 
-    const qb = this.readigRepository.createQueryBuilder('property');
+    const qb = this.readigRepository
+      .createQueryBuilder('reading')
+      .leftJoinAndSelect('reading.meter', 'meter')
+      .leftJoinAndSelect('reading.session', 'session')
+      .leftJoinAndSelect('reading.evidence', 'evidence')
+      .leftJoinAndSelect('reading.causal', 'causal');
 
     if (search) {
       qb.where(
-        'property.cadastralRecord ILIKE :search OR property.address ILIKE :search',
-        {
-          search: `%${search}%`,
-        },
+        'reading.cycle ILIKE :search OR reading.type ILIKE :search OR meter.serial ILIKE :search',
+        { search: `%${search}%` },
       );
     }
 
     const [data, total] = await qb
       .skip(skip)
       .take(limit)
-      .orderBy('property.createdAt', 'DESC')
+      .orderBy('reading.createdAt', 'DESC')
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+  */
+
+  async findAll(query: PaginationQueryDto): Promise<{
+    data: any[];
+    total: number;
+    currentPage: number;
+    totalPages: number;
+  }> {
+    const { page = 1, limit = 10, search } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.readigRepository
+      .createQueryBuilder('reading')
+      .leftJoin('reading.meter', 'meter')
+      .leftJoin('meter.property', 'property')
+      .leftJoin('property.tenant', 'tenant')
+      .leftJoin('reading.evidence', 'evidence')
+      .leftJoin('reading.causal', 'causal')
+      .select([
+        'reading.id',
+        'reading.cycle',
+        'reading.route',
+        'reading.type',
+        'reading.createdAt',
+        'meter.serialNumber',
+        'property.address',
+        'tenant.fullName',
+        'evidence.value',
+        'evidence.photo',
+        'causal.causalId',
+      ]);
+
+    // 🔍 búsqueda
+    if (search) {
+      qb.where(
+        'reading.cycle ILIKE :search OR reading.type ILIKE :search OR meter.serial ILIKE :search OR tenant.name ILIKE :search',
+        { search: `%${search}%` },
+      );
+    }
+
+    const [data, total] = await qb
+      .skip(skip)
+      .take(limit)
+      .orderBy('reading.createdAt', 'DESC')
       .getManyAndCount();
 
     return {
