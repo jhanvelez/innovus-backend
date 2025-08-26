@@ -24,6 +24,7 @@ import { TenantModule } from './tenant/tenant.module';
 import { ReadingSessionModule } from './reading-session/reading-session.module';
 
 import { join } from 'path';
+import { ReportModule } from './report/report.module';
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
 
@@ -68,6 +69,7 @@ import * as crypto from 'crypto';
     PropertyModule,
     TenantModule,
     ReadingSessionModule,
+    ReportModule,
   ],
   controllers: [AppController],
   providers: [AppService],
