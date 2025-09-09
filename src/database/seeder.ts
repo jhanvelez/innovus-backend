@@ -7,6 +7,7 @@ import { createDataSource } from '../config/typeorm.config';
 import seedDepartments from './seeders/department.seeder';
 import seedMunicipalities from './seeders/municipality.seeder';
 import seedUsers from './seeders/user.seeder';
+import seedStrata from './seeders/strata.seeder';
 
 const args = process.argv.slice(2);
 
@@ -18,13 +19,14 @@ const args = process.argv.slice(2);
   await dataSource.initialize();
   console.log('[Seeder] Conectado a la base de datos');
 
-  // await dataSource.query('TRUNCATE TABLE users CASCADE');
+  // await dataSource.query('TRUNCATE TABLE user');
   // await dataSource.query('TRUNCATE TABLE municipalities CASCADE');
   // await dataSource.query('TRUNCATE TABLE departments CASCADE');
 
   if (args.includes('users')) await seedUsers(dataSource);
   if (args.includes('departments')) await seedDepartments(dataSource);
   if (args.includes('municipalities')) await seedMunicipalities(dataSource);
+  if (args.includes('strata')) await seedStrata(dataSource);
 
   await dataSource.destroy();
   console.log('[Seeder] Finalizado');

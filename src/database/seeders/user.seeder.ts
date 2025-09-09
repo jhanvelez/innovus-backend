@@ -5,7 +5,7 @@ import { User } from '../../user/entities/user.entity';
 export default async function seedUsers(dataSource: DataSource) {
   const repo = dataSource.getRepository(User);
 
-  const hashedPassword = await bcrypt.hash('password123', 10);
+  const hashedPassword = await bcrypt.hash('admin', 10);
 
   const data = [
     {
@@ -13,7 +13,7 @@ export default async function seedUsers(dataSource: DataSource) {
       lastName: 'Pérez',
       documentType: 'CC',
       documentId: '1234567890',
-      email: 'juan.perez@example.com',
+      email: 'admin@example.com',
       password: hashedPassword, // hash de "password123"
       isEmailConfirmed: true,
     },

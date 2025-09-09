@@ -11,6 +11,7 @@ import { Notification } from '../notification/entities/notification.entity';
 import { User } from '../user/entities/user.entity';
 import { Department } from '../locations/entities/department.entity';
 import { Municipality } from '../locations/entities/municipality.entity';
+import { Stratum } from '../stratum/entities/stratum.entity';
 
 export const createDataSource = (configService: ConfigService) => {
   return new DataSource({
@@ -32,6 +33,7 @@ export const createDataSource = (configService: ConfigService) => {
       User,
       Department,
       Municipality,
+      Stratum,
     ],
     synchronize: true,
   });

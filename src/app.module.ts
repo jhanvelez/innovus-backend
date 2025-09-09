@@ -26,6 +26,12 @@ import { ReadingSessionModule } from './reading-session/reading-session.module';
 import { join } from 'path';
 import { ReportModule } from './report/report.module';
 import { CyclesRoutesModule } from './cycles-routes/cycles-routes.module';
+import { StratumModule } from './stratum/stratum.module';
+import { ConceptsModule } from './concepts/concepts.module';
+import { SubsidiesModule } from './subsidies/subsidies.module';
+import { RanksModule } from './ranks/ranks.module';
+import { FinancingModule } from './financing/financing.module';
+import { AgreementsModule } from './agreements/agreements.module';
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
 
@@ -72,6 +78,12 @@ import * as crypto from 'crypto';
     ReadingSessionModule,
     ReportModule,
     CyclesRoutesModule,
+    StratumModule,
+    ConceptsModule,
+    SubsidiesModule,
+    RanksModule,
+    FinancingModule,
+    AgreementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
