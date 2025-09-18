@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+// billing.controller.ts
+import { Controller, Post, Param, Body, Get } from '@nestjs/common';
 import { BillingService } from './billing.service';
-import { CreateBillingDto } from './dto/create-billing.dto';
-import { UpdateBillingDto } from './dto/update-billing.dto';
 
 @Controller('billing')
 export class BillingController {
   constructor(private readonly billingService: BillingService) {}
 
-  @Post()
-  create(@Body() createBillingDto: CreateBillingDto) {
-    return this.billingService.create(createBillingDto);
+  // Obtener facturación por periodo y ciclo
+  @Get(':cycleId')
+  async findAll(
+    @Param('cycleId') cycleId: string,
+    @Body() body: { month: number; year: number },
+  ) {
+    return await this.billingService.findAll(cycleId, body.year, body.month);
   }
 
-  @Get()
-  findAll() {
-    return this.billingService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.billingService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBillingDto: UpdateBillingDto) {
-    return this.billingService.update(+id, updateBillingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billingService.remove(+id);
+  @Post('generate/cycle/:cycleId')
+  async generateByCycle(
+    @Param('cycleId') cycleId: string,
+    @Body() body: { month: number; year: number },
+  ) {
+    await this.billingService.enqueueBillingProcess(
+      cycleId,
+      body.year,
+      body.month,
+    );
+    return {
+      message: `Proceso de facturación iniciado para ciclo ${cycleId}. 
+      Recibirás una notificación cuando termine.`,
+    };
   }
 }

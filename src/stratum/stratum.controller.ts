@@ -6,7 +6,7 @@ export class StratumController {
   constructor(private readonly strataService: StratumService) {}
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
+  findOne(@Param('id') id: string) {
     return this.strataService.findOne(id);
   }
 

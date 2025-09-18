@@ -17,10 +17,13 @@ export class CreatePropertyDto {
   @MaxLength(255)
   address: string;
 
-  @IsString()
   @IsNotEmpty()
-  @Length(1, 50)
-  cycle: string;
+  @IsUUID()
+  stratumId: string;
+
+  @IsNotEmpty()
+  @IsUUID()
+  cycleId: string;
 
   @IsString()
   @IsNotEmpty()

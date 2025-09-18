@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Put,
 } from '@nestjs/common';
 import { PropertyService } from './property.service';
 import { CreatePropertyDto } from './dto/create-property.dto';
@@ -48,5 +49,10 @@ export class PropertyController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.propertyService.remove(+id);
+  }
+
+  @Put('state/:id')
+  state(@Param('id') id: string, @Body() state: any) {
+    return this.propertyService.state(id, state);
   }
 }

@@ -7,6 +7,8 @@ import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 export class InvoiceController {
   constructor(private readonly invoiceService: InvoiceService) {}
 
+  /*
+
   @Post()
   create(@Body() createInvoiceDto: CreateInvoiceDto) {
     return this.invoiceService.create(createInvoiceDto);
@@ -31,4 +33,5 @@ export class InvoiceController {
   remove(@Param('id') id: string) {
     return this.invoiceService.remove(+id);
   }
+  */
 }

@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { ReadingSessionService } from './reading-session.service';
 import { CreateReadingSessionDto } from './dto/create-reading-session.dto';
 import { UpdateReadingSessionDto } from './dto/update-reading-session.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Controller('reading-sessions')
 export class ReadingSessionController {
@@ -13,8 +22,8 @@ export class ReadingSessionController {
   }
 
   @Get()
-  findAll() {
-    return this.readingSessionService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.readingSessionService.findAll(paginationQuery);
   }
 
   @Get('active')

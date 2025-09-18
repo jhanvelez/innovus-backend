@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { ReadingSession } from './entities/reading-session.entity';
 import { CreateReadingSessionDto } from './dto/create-reading-session.dto';
 import { UpdateReadingSessionDto } from './dto/update-reading-session.dto';
+import { PaginationQueryDto } from './dto/pagination-query.dto';
 
 @Injectable()
 export class ReadingSessionService {
@@ -46,10 +47,55 @@ export class ReadingSessionService {
     return this.readingSessionRepository.save(session);
   }
 
-  async findAll(): Promise<ReadingSession[]> {
-    return this.readingSessionRepository.find({
-      order: { createdAt: 'DESC' },
+  async findAll(query: PaginationQueryDto): Promise<{
+    data: ReadingSession[];
+    total: number;
+    currentPage: number;
+    totalPages: number;
+  }> {
+    const { page = 1, limit = 10, search } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.readingSessionRepository
+      .createQueryBuilder('reading_sessions')
+      .select([
+        'reading_sessions.id',
+        'reading_sessions.year',
+        'reading_sessions.month',
+        'reading_sessions.isActive',
+        'reading_sessions.createdAt',
+      ]);
+
+    if (search) {
+      qb.where('reading_sessions.year ILIKE :search', {
+        search: `%${search}%`,
+      });
+    }
+
+    const [data, total] = await qb
+      .skip(skip)
+      .take(limit)
+      .orderBy('reading_sessions.createdAt', 'DESC')
+      .getManyAndCount();
+
+    return {
+      data,
+      total,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  async findOne(year, month): Promise<ReadingSession> {
+    const session = await this.readingSessionRepository.findOne({
+      where: { year, month, isActive: true },
     });
+
+    if (!session) {
+      throw new NotFoundException(`Sesión con ID ${month} no encontrada`);
+    }
+
+    return session;
   }
 
   async getActiveSession(): Promise<ReadingSession> {

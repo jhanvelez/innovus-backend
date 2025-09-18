@@ -15,13 +15,10 @@ import { MeterModule } from './meter/meter.module';
 import { BillingModule } from './billing/billing.module';
 import { SubscriberModule } from './subscriber/subscriber.module';
 import { BillingConceptModule } from './billing-concept/billing-concept.module';
-import { InvoiceModule } from './invoice/invoice.module';
 import { ServiceOrderModule } from './service-order/service-order.module';
 import { PaymentModule } from './payment/payment.module';
 import { NotificationModule } from './notification/notification.module';
-import { PropertyModule } from './property/property.module';
 import { TenantModule } from './tenant/tenant.module';
-import { ReadingSessionModule } from './reading-session/reading-session.module';
 
 import { join } from 'path';
 import { ReportModule } from './report/report.module';
@@ -29,16 +26,24 @@ import { CyclesRoutesModule } from './cycles-routes/cycles-routes.module';
 import { StratumModule } from './stratum/stratum.module';
 import { ConceptsModule } from './concepts/concepts.module';
 import { SubsidiesModule } from './subsidies/subsidies.module';
-import { RanksModule } from './ranks/ranks.module';
 import { FinancingModule } from './financing/financing.module';
 import { AgreementsModule } from './agreements/agreements.module';
+
+import { BullModule } from '@nestjs/bull';
+import { ConsumptionRangesModule } from './consumption-ranges/consumption-ranges.module';
 import * as crypto from 'crypto';
 (global as any).crypto = crypto;
 
 @Module({
   imports: [
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'), // 👈 carpeta que quieres exponer
+      rootPath: join(__dirname, '..', 'uploads'),
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -69,21 +74,18 @@ import * as crypto from 'crypto';
     BillingModule,
     SubscriberModule,
     BillingConceptModule,
-    InvoiceModule,
     ServiceOrderModule,
     PaymentModule,
     NotificationModule,
-    PropertyModule,
     TenantModule,
-    ReadingSessionModule,
     ReportModule,
     CyclesRoutesModule,
     StratumModule,
     ConceptsModule,
     SubsidiesModule,
-    RanksModule,
     FinancingModule,
     AgreementsModule,
+    ConsumptionRangesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

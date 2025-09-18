@@ -4,27 +4,60 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Billing } from 'src/billing/entities/billing.entity';
+import { Meter } from 'src/meter/entities/meter.entity';
+import { Property } from 'src/property/entities/property.entity';
+import { ReadingSession } from 'src/reading-session/entities/reading-session.entity';
 
-@Entity()
+export enum InvoiceStatus {
+  PENDING = 'pendiente',
+  PAID = 'pagado',
+  CANCELED = 'anulado',
+}
+
+@Entity('invoices')
 export class Invoice {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @ManyToOne(() => Billing, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'billingId' })
-  billing: Billing;
+  @ManyToOne(() => Property, { eager: false })
+  @JoinColumn({ name: 'propertyId' })
+  property: Property;
 
-  @Column({ length: 100 })
-  number: string;
+  @ManyToOne(() => Meter, { eager: true })
+  @JoinColumn({ name: 'meterId' })
+  meter: Meter;
 
-  @Column()
-  emissionDate: Date;
+  @ManyToOne(() => ReadingSession, { eager: true })
+  @JoinColumn({ name: 'readingSessionId' })
+  readingSession: ReadingSession;
 
-  @Column({ nullable: true })
-  fileUrl: string;
+  @Column({ type: 'int' })
+  year: number;
 
-  @Column({ length: 50 })
-  type: string;
+  @Column({ type: 'int' })
+  month: number;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2 })
+  consumption: number;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2 })
+  valueBeforeAdjustments: number;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2 })
+  valueAfterAdjustments: number;
+
+  @Column({ type: 'decimal', precision: 12, scale: 2 })
+  fixedCharge: number;
+
+  @Column({ type: 'enum', enum: InvoiceStatus, default: InvoiceStatus.PENDING })
+  status: InvoiceStatus;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

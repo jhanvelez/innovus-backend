@@ -1,13 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePropertyDto } from './dto/create-property.dto';
 import { UpdatePropertyDto } from './dto/update-property.dto';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 
-import { Property } from './entities/property.entity';
 import { Subscriber } from '../subscriber/entities/subscriber.entity';
+import { Cycle } from 'src/cycles-routes/entities/cycle.entity';
+import { Stratum } from 'src/stratum/entities/stratum.entity';
 import { Tenant } from '../tenant/entities/tenant.entity';
+import { Property } from './entities/property.entity';
 
 @Injectable()
 export class PropertyService {
@@ -28,16 +34,21 @@ export class PropertyService {
     const qb = this.propetyRepository
       .createQueryBuilder('property')
       .leftJoin('property.subscriber', 'subscriber')
+      .leftJoin('property.stratum', 'stratum')
       .leftJoin('property.tenant', 'tenant')
+      .leftJoin('property.cycle', 'cycle')
       .select([
         'property.id',
         'property.cadastralRecord',
         'property.address',
         'property.cycle',
         'property.route',
+        'property.active',
         'property.createdAt',
         'subscriber.nameOwner',
         'tenant.fullName',
+        'cycle.name',
+        'stratum.name',
       ]);
 
     if (search) {
@@ -70,7 +81,9 @@ export class PropertyService {
   }> {
     const entity = this.propetyRepository.create({
       ...dto,
+      stratum: { id: dto.stratumId } as Stratum,
       subscriber: { id: dto.subscriberId } as Subscriber,
+      cycle: { id: dto.cycleId } as Cycle,
       tenant: { id: dto.tenantId } as Tenant,
     });
     const saved = await this.propetyRepository.save(entity);
@@ -139,5 +152,45 @@ export class PropertyService {
       status: true,
       message: 'Properties with meters retrieved successfully',
     };
+  }
+
+  async state(id: string, dto: any): Promise<void> {
+    const tariff = await this.findOne(id);
+
+    const tariffRe = await this.propetyRepository.find({
+      where: {
+        stratum: tariff.stratum,
+        active: true,
+      },
+    });
+
+    if (dto.state) {
+      if (tariffRe.length > 1) {
+        if (tariffRe) {
+          throw new ConflictException(
+            `Ya existe una tarifa activa para el estrato, inactívalo para un nuevo registro.`,
+          );
+        }
+      }
+    }
+
+    Object.assign(tariff, {
+      active: !dto.state,
+    });
+
+    await this.propetyRepository.save(tariff);
+  }
+
+  async findByCycle(cycleId: string) {
+    return this.propetyRepository.find({
+      where: { cycle: { id: cycleId } },
+      relations: [
+        'subscriber',
+        'tenant',
+        'stratum',
+        'meters',
+        'meters.readings',
+      ],
+    });
   }
 }

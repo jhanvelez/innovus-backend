@@ -1,26 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { CreateBillingDto } from './dto/create-billing.dto';
-import { UpdateBillingDto } from './dto/update-billing.dto';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { InvoiceService } from 'src/invoice/invoice.service';
 
 @Injectable()
 export class BillingService {
-  create(createBillingDto: CreateBillingDto) {
-    return 'This action adds a new billing';
+  constructor(
+    @InjectQueue('billing') private readonly billingQueue: Queue,
+    private readonly invoiceService: InvoiceService,
+  ) {}
+
+  async findAll(cycleId: string, year: number, month: number) {
+    return this.invoiceService.findAll(cycleId, year, month);
   }
 
-  findAll() {
-    return `This action returns all billing`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} billing`;
-  }
-
-  update(id: number, updateBillingDto: UpdateBillingDto) {
-    return `This action updates a #${id} billing`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} billing`;
+  async enqueueBillingProcess(cycleId: string, year: number, month: number) {
+    await this.billingQueue.add(
+      'generateByCycle',
+      {
+        cycleId,
+        year,
+        month,
+      },
+      {
+        removeOnComplete: true,
+        attempts: 3,
+      },
+    );
   }
 }

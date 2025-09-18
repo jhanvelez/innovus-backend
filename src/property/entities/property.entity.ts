@@ -9,6 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Subscriber } from 'src/subscriber/entities/subscriber.entity';
+import { Cycle } from 'src/cycles-routes/entities/cycle.entity';
+import { Stratum } from 'src/stratum/entities/stratum.entity';
 import { Tenant } from 'src/tenant/entities/tenant.entity';
 import { Meter } from 'src/meter/entities/meter.entity';
 
@@ -23,8 +25,13 @@ export class Property {
   @Column({ length: 255 })
   address: string;
 
-  @Column({ length: 50 })
-  cycle: string;
+  @ManyToOne(() => Stratum)
+  @JoinColumn({ name: 'stratumId' })
+  stratum: Stratum;
+
+  @ManyToOne(() => Cycle)
+  @JoinColumn({ name: 'cycleId' })
+  cycle: Cycle;
 
   @Column({ length: 50 })
   route: string;
@@ -39,6 +46,9 @@ export class Property {
 
   @OneToMany(() => Meter, (meter) => meter.property)
   meters: Meter[];
+
+  @Column({ default: true })
+  active: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

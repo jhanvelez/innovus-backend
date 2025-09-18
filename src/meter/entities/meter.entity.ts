@@ -3,10 +3,12 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Property } from 'src/property/entities/property.entity';
+import { Reading } from 'src/reading/entities/reading.entity';
 
 @Entity()
 export class Meter {
@@ -45,6 +47,9 @@ export class Meter {
 
   @ManyToOne(() => Property, (property) => property.meters)
   property: Property;
+
+  @OneToMany(() => Reading, (reading) => reading.meter, { cascade: true })
+  readings: Reading[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
