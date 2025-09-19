@@ -1,42 +1,38 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Patch,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Post, Get, Param, Body, Patch } from '@nestjs/common';
 import { FinancingService } from './financing.service';
-import { CreatePaymentPlanDto } from './dto/create-financing.dto';
-import { UpdatePaymentPlanDto } from './dto/update-financing.dto';
+import { CreatePaymentPlanDto } from './dto/create-payment-plan.dto';
 
-@Controller('payment-plans')
+@Controller('financing')
 export class FinancingController {
   constructor(private readonly financingService: FinancingService) {}
 
+  // Crear plan de financiación para un medidor (a través de su factura)
   @Post()
-  create(@Body() dto: CreatePaymentPlanDto) {
-    return this.financingService.create(dto);
+  createPlan(@Body() dto: CreatePaymentPlanDto) {
+    return this.financingService.createPlan(dto);
   }
 
-  @Get()
-  findAll() {
-    return this.financingService.findAll();
-  }
-
+  // Ver un plan con todas sus cuotas
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.financingService.findOne(+id);
+  getPlan(@Param('id') id: string) {
+    return this.financingService.getPlan(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdatePaymentPlanDto) {
-    return this.financingService.update(+id, dto);
+  // Ver planes de un medidor específico
+  @Get('meter/:meterId')
+  getPlansByMeter(@Param('meterId') meterId: string) {
+    return this.financingService.getPlansByMeter(meterId);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.financingService.remove(+id);
+  // Listar cuotas de un plan
+  @Get(':id/installments')
+  getInstallments(@Param('id') id: string) {
+    return this.financingService.getInstallments(id);
+  }
+
+  // Cancelar un plan
+  @Patch(':id/cancel')
+  cancelPlan(@Param('id') id: string) {
+    return this.financingService.cancelPlan(id);
   }
 }

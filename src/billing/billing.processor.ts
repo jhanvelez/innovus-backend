@@ -1,4 +1,3 @@
-// billing.processor.ts
 import { Processor, Process } from '@nestjs/bull';
 import { Job } from 'bull';
 import { PropertyService } from 'src/property/property.service';

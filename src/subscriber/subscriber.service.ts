@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { Subscriber } from './entities/subscriber.entity';
 import { User } from '../user/entities/user.entity';
+import { Stratum } from 'src/stratum/entities/stratum.entity';
 
 @Injectable()
 export class SubscriberService {
@@ -24,7 +25,20 @@ export class SubscriberService {
     const { page = 1, limit = 10, search } = query;
     const skip = (page - 1) * limit;
 
-    const qb = this.subscriberRepository.createQueryBuilder('subscriber');
+    const qb = this.subscriberRepository
+      .createQueryBuilder('subscriber')
+      .leftJoin('subscriber.stratum', 'stratum')
+      .select([
+        'subscriber.id',
+        'subscriber.identification',
+        'subscriber.category',
+        'subscriber.nameOwner',
+        'subscriber.phone',
+        'subscriber.email',
+        'subscriber.active',
+        'subscriber.createdAt',
+        'stratum.name',
+      ]);
 
     if (search) {
       qb.where(
@@ -60,6 +74,7 @@ export class SubscriberService {
     const entity = this.subscriberRepository.create({
       ...dto,
       user: { id: Number(userId) } as User,
+      stratum: dto.stratumId ? ({ id: dto.stratumId } as Stratum) : null,
     });
     const saved = await this.subscriberRepository.save(entity);
 

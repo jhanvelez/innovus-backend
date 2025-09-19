@@ -2,7 +2,7 @@ import {
   IsString,
   IsNotEmpty,
   IsOptional,
-  IsEmail,
+  ValidateIf,
   Length,
   IsInt,
   Min,
@@ -25,13 +25,12 @@ export class CreateSubscriberDto {
   @Length(0, 20)
   phone?: string;
 
-  @IsEmail()
-  @IsOptional()
-  @Length(0, 100)
-  email?: string;
-
   @IsString()
   @IsNotEmpty()
   @Length(1, 50)
   category: string;
+
+  @ValidateIf((o) => o.category === 'residencial')
+  @IsNotEmpty({ message: 'stratumId es requerido para categoría residencial' })
+  stratumId: string;
 }
